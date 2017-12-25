@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0;net462</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Dialogs\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
