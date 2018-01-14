@@ -22,22 +22,19 @@ namespace BotApplication
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_ => Configuration);
+            services.AddSingleton(Configuration);
 
-            var credentialProvider = new StaticCredentialProvider(
-                Configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value,
+            var credentialProvider = new StaticCredentialProvider(Configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value,
                 Configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppPasswordKey)?.Value);
 
             services.AddAuthentication(
-                    // This can be removed after https://github.com/aspnet/IISIntegration/issues/371
-                    options =>
-                    {
-                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    }
+                      options =>
+                      {
+                          options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                          options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                      }
                 )
                 .AddBotAuthentication(credentialProvider);
 
@@ -47,12 +44,16 @@ namespace BotApplication
             {
                 options.Filters.Add(typeof(TrustServiceUrlAttribute));
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseStaticFiles();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseAuthentication();
 
